@@ -1,0 +1,1 @@
+All future modpacks must be placed in here. For the main one, put it under example_mods
