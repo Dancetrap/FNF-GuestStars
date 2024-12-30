@@ -964,11 +964,12 @@ class PlayState extends MusicBeatState
 			}
 
 			startedCountdown = true;
-			Conductor.songPosition = -Conductor.crochet * 5;
+			Conductor.songPosition = -Conductor.crochet * 4.5;
 			setOnScripts('startedCountdown', true);
 			callOnScripts('onCountdownStarted', null);
 
 			var swagCounter:Int = 0;
+
 			if (startOnTime > 0) {
 				clearNotesBefore(startOnTime);
 				setSongTime(startOnTime - 350);
@@ -981,59 +982,140 @@ class PlayState extends MusicBeatState
 			}
 			moveCameraSection();
 
-			startTimer = new FlxTimer().start(Conductor.crochet / 1000 / playbackRate, function(tmr:FlxTimer)
-			{
-				characterBopper(tmr.loopsLeft);
+			// startTimer = new FlxTimer().start(Conductor.crochet / 3000 / playbackRate, function(tmr:FlxTimer)
+			// {
+			// 	if(swagCounter == 0 || swagCounter % 3 == 0)
+			// 		characterBopper(tmr.loopsLeft);
 
-				var introAssets:Map<String, Array<String>> = new Map<String, Array<String>>();
-				var introImagesArray:Array<String> = switch(stageUI) {
-					case "pixel": ['${stageUI}UI/ready-pixel', '${stageUI}UI/set-pixel', '${stageUI}UI/date-pixel'];
-					case "normal": ["ready", "set" ,"go"];
-					default: ['${stageUI}UI/ready', '${stageUI}UI/set', '${stageUI}UI/go'];
-				}
-				introAssets.set(stageUI, introImagesArray);
+			// 	var introAssets:Map<String, Array<String>> = new Map<String, Array<String>>();
+			// 	var introImagesArray:Array<String> = switch(stageUI) {
+			// 		case "pixel": ['${stageUI}UI/ready-pixel', '${stageUI}UI/set-pixel', '${stageUI}UI/date-pixel'];
+			// 		case "normal": ["ready", "set" ,"go"];
+			// 		default: ['${stageUI}UI/ready', '${stageUI}UI/set', '${stageUI}UI/go'];
+			// 	}
+			// 	introAssets.set(stageUI, introImagesArray);
 
-				var introAlts:Array<String> = introAssets.get(stageUI);
-				var antialias:Bool = (ClientPrefs.data.antialiasing && !isPixelStage);
-				var tick:Countdown = THREE;
+			// 	var introAlts:Array<String> = introAssets.get(stageUI);
+			// 	var antialias:Bool = (ClientPrefs.data.antialiasing && !isPixelStage);
+			// 	var tick:Countdown = THREE;
 
-				switch (swagCounter)
+			// 	switch (swagCounter)
+			// 	{
+			// 		case 0:
+			// 			FlxG.sound.play(Paths.sound('intro3' + introSoundsSuffix), 0.6);
+			// 			tick = THREE;
+			// 		case 3:
+			// 			countdownReady = createCountdownSprite(introAlts[0], antialias);
+			// 			FlxG.sound.play(Paths.sound('intro2' + introSoundsSuffix), 0.6);
+			// 			tick = TWO;
+			// 		case 6:
+			// 			countdownSet = createCountdownSprite(introAlts[1], antialias);
+			// 			FlxG.sound.play(Paths.sound('intro1' + introSoundsSuffix), 0.6);
+			// 			tick = ONE;
+			// 		case 9:
+			// 			countdownGo = createCountdownSprite(introAlts[2], antialias);
+			// 			FlxG.sound.play(Paths.sound('introGo' + introSoundsSuffix), 0.6);
+			// 			tick = GO;
+			// 		case 12:
+			// 			tick = START;
+
+			// 		case 1,2:
+			// 			tick = THREE;
+			// 		case 4,5:
+			// 			tick = TWO;
+			// 		case 7:
+			// 			tick = ONE;
+			// 		case 8:
+			// 			tick = ONE;
+			// 			FlxG.sound.play(Paths.sound('Metronome_Tick'), 0.6);
+
+			// 		case 10,11:
+			// 			tick = GO;
+
+			// 		case 1, 2, 4, 5, 7, 8, 10, 11:
+			// 			// FlxG.sound.play(Paths.sound('Metronome_Tick'), 0.6);
+			// 	}
+
+			// 	notes.forEachAlive(function(note:Note) {
+			// 		if(ClientPrefs.data.opponentStrums || note.mustPress)
+			// 		{
+			// 			note.copyAlpha = false;
+			// 			note.alpha = note.multAlpha;
+			// 			if(ClientPrefs.data.middleScroll && !note.mustPress)
+			// 				note.alpha *= 0.35;
+			// 		}
+			// 	});
+
+			// 	stagesFunc(function(stage:BaseStage) stage.countdownTick(tick, swagCounter));
+			// 	callOnLuas('onCountdownTick', [swagCounter]);
+			// 	callOnHScript('onCountdownTick', [tick, swagCounter]);
+
+			// 	swagCounter += 1;
+			// }, 13);
+
+			startTimer = new FlxTimer().start(Conductor.crochet / 2000 / playbackRate, function(tmr:FlxTimer)
 				{
-					case 0:
-						FlxG.sound.play(Paths.sound('intro3' + introSoundsSuffix), 0.6);
-						tick = THREE;
-					case 1:
-						countdownReady = createCountdownSprite(introAlts[0], antialias);
-						FlxG.sound.play(Paths.sound('intro2' + introSoundsSuffix), 0.6);
-						tick = TWO;
-					case 2:
-						countdownSet = createCountdownSprite(introAlts[1], antialias);
-						FlxG.sound.play(Paths.sound('intro1' + introSoundsSuffix), 0.6);
-						tick = ONE;
-					case 3:
-						countdownGo = createCountdownSprite(introAlts[2], antialias);
-						FlxG.sound.play(Paths.sound('introGo' + introSoundsSuffix), 0.6);
-						tick = GO;
-					case 4:
-						tick = START;
-				}
-
-				notes.forEachAlive(function(note:Note) {
-					if(ClientPrefs.data.opponentStrums || note.mustPress)
-					{
-						note.copyAlpha = false;
-						note.alpha = note.multAlpha;
-						if(ClientPrefs.data.middleScroll && !note.mustPress)
-							note.alpha *= 0.35;
+					if(swagCounter == 0 || swagCounter % 2 == 0)
+						characterBopper(tmr.loopsLeft);
+	
+					var introAssets:Map<String, Array<String>> = new Map<String, Array<String>>();
+					var introImagesArray:Array<String> = switch(stageUI) {
+						case "pixel": ['${stageUI}UI/ready-pixel', '${stageUI}UI/set-pixel', '${stageUI}UI/date-pixel'];
+						case "normal": ["ready", "set" ,"go"];
+						default: ['${stageUI}UI/ready', '${stageUI}UI/set', '${stageUI}UI/go'];
 					}
-				});
-
-				stagesFunc(function(stage:BaseStage) stage.countdownTick(tick, swagCounter));
-				callOnLuas('onCountdownTick', [swagCounter]);
-				callOnHScript('onCountdownTick', [tick, swagCounter]);
-
-				swagCounter += 1;
-			}, 5);
+					introAssets.set(stageUI, introImagesArray);
+	
+					var introAlts:Array<String> = introAssets.get(stageUI);
+					var antialias:Bool = (ClientPrefs.data.antialiasing && !isPixelStage);
+					var tick:Countdown = THREE;
+	
+					switch (swagCounter)
+					{
+						case 0:
+							FlxG.sound.play(Paths.sound('intro3' + introSoundsSuffix), 0.6);
+							tick = THREE;
+						case 2:
+							countdownReady = createCountdownSprite(introAlts[0], antialias);
+							FlxG.sound.play(Paths.sound('intro2' + introSoundsSuffix), 0.6);
+							tick = TWO;
+						case 4:
+							countdownSet = createCountdownSprite(introAlts[1], antialias);
+							FlxG.sound.play(Paths.sound('intro1' + introSoundsSuffix), 0.6);
+							tick = ONE;
+						case 6:
+							countdownGo = createCountdownSprite(introAlts[2], antialias);
+							FlxG.sound.play(Paths.sound('introGo' + introSoundsSuffix), 0.6);
+							tick = GO;
+						case 8:
+							tick = START;
+						case 1:
+							tick = THREE;
+						case 3:
+							tick = TWO;
+						case 5:
+							FlxG.sound.play(Paths.sound('Metronome_Tick'), 0.6);
+							tick = ONE;
+						case 7:
+							tick = GO;
+					}
+	
+					notes.forEachAlive(function(note:Note) {
+						if(ClientPrefs.data.opponentStrums || note.mustPress)
+						{
+							note.copyAlpha = false;
+							note.alpha = note.multAlpha;
+							if(ClientPrefs.data.middleScroll && !note.mustPress)
+								note.alpha *= 0.35;
+						}
+					});
+	
+					stagesFunc(function(stage:BaseStage) stage.countdownTick(tick, swagCounter));
+					callOnLuas('onCountdownTick', [swagCounter]);
+					callOnHScript('onCountdownTick', [tick, swagCounter]);
+	
+					swagCounter += 1;
+				}, 9);
 		}
 		return true;
 	}
