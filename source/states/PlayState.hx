@@ -1094,7 +1094,7 @@ class PlayState extends MusicBeatState
 						case 3:
 							tick = TWO;
 						case 5:
-							FlxG.sound.play(Paths.sound('Metronome_Tick'), 0.6);
+							FlxG.sound.play(Paths.sound('introLets'), 0.6);
 							tick = ONE;
 						case 7:
 							tick = GO;
