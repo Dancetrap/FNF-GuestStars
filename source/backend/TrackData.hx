@@ -10,6 +10,7 @@ typedef TrackInfo =
     var character:String;
     var title:String;
     var description:String;
+    var color:Null<Array<String>>;
 }
 
 typedef TrackFile = 

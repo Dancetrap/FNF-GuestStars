@@ -71,7 +71,6 @@ class TitleState extends MusicBeatState
 
 	override public function create():Void
 	{
-		TrackData.reloadTracksFiles();
 		// for(track in TrackData.tracksList)
 		// {
 		// 	for(song in TrackData.tracksLoaded[track].songs)
@@ -123,6 +122,7 @@ class TitleState extends MusicBeatState
 		#end
 
 		Highscore.load();
+		TrackData.reloadTracksFiles();
 
 		// IGNORE THIS!!!
 		titleJSON = tjson.TJSON.parse(Paths.getTextFromFile('images/gfDanceTitle.json'));
