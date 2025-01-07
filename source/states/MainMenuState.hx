@@ -6,6 +6,9 @@ import flixel.effects.FlxFlicker;
 import lime.app.Application;
 import states.editors.MasterEditorMenu;
 import options.OptionsState;
+import objects.GradientBG;
+
+import flixel.util.FlxGradient;
 
 class MainMenuState extends MusicBeatState
 {
@@ -26,6 +29,8 @@ class MainMenuState extends MusicBeatState
 
 	var magenta:FlxSprite;
 	var camFollow:FlxObject;
+	// var whiteBG:FlxSprite;
+	var whiteBG:GradientBG;
 
 	override function create()
 	{
@@ -65,6 +70,18 @@ class MainMenuState extends MusicBeatState
 		magenta.visible = false;
 		magenta.color = 0xFFfd719b;
 		add(magenta);
+
+		// whiteBG = FlxGradient.createGradientFlxSprite(FlxG.width, FlxG.height, [0xFF00ffcd, 0xFFff1e73]);
+		// whiteBG.scrollFactor.set(0,0);
+		// whiteBG.updateHitbox();
+		// whiteBG.screenCenter();
+		// add(whiteBG);
+
+		whiteBG = new GradientBG(0,0,FlxG.width, FlxG.height);
+		whiteBG.scrollFactor.set(0,0);
+		whiteBG.updateHitbox();
+		whiteBG.screenCenter();
+		add(whiteBG);
 
 		menuItems = new FlxTypedGroup<FlxSprite>();
 		add(menuItems);
@@ -122,6 +139,16 @@ class MainMenuState extends MusicBeatState
 			FlxG.sound.music.volume += 0.5 * elapsed;
 			if (FreeplayState.vocals != null)
 				FreeplayState.vocals.volume += 0.5 * elapsed;
+		}
+
+		// if(FlxG.mouse.justPressed)
+		// {
+		// 	FlxGradient.overlayGradientOnFlxSprite(whiteBG, Std.int(whiteBG.width), Std.int(whiteBG.height), [FlxColor.RED, FlxColor.BLUE]);
+		// }
+
+		if(FlxG.mouse.justPressed)
+		{
+			// whiteBG.setGradient(0xFF00ffcd, 0xFFff1e73);
 		}
 
 		if (!selectedSomethin)
