@@ -7,8 +7,10 @@ import lime.app.Application;
 import states.editors.MasterEditorMenu;
 import options.OptionsState;
 import objects.GradientBG;
+import objects.FlxEndlessGallery;
 
 import flixel.util.FlxGradient;
+import flixel.addons.display.FlxStarField;
 
 class MainMenuState extends MusicBeatState
 {
@@ -82,6 +84,25 @@ class MainMenuState extends MusicBeatState
 		whiteBG.updateHitbox();
 		whiteBG.screenCenter();
 		add(whiteBG);
+
+		// var testGallery:FlxEndlessGallery = new FlxEndlessGallery([Paths.image("menuBG"), Paths.image("menuBGBlue"), Paths.image("unknownMod"), Paths.image("menuBGMagenta"),Paths.image("menuDesat")], 40);
+		// testGallery.scrollFactor.set(0,0);
+		// testGallery.setScale(0.5);
+		// testGallery.repositionSprites(BOTTOM);
+		// testGallery.scale.set(0.5,0.5);
+		// testGallery.screenCenter();
+		// testGallery.center();
+		// testGallery.velocity.set(-250, 0);
+		// add(testGallery);
+		// trace(testGallery.height);
+
+		// var starField:FlxStarField3D = new FlxStarField3D(0, 0, FlxG.width, FlxG.height, 1000);
+		// starField.setStarSpeed(200, 500);
+		// starField.setStarDepthColors(5, FlxColor.WHITE, FlxColor.BLACK);
+		// starField.scrollFactor.set(0,0);
+		// starField.updateHitbox();
+		// add(starField);
+		//I don't know how to make these much bigger
 
 		menuItems = new FlxTypedGroup<FlxSprite>();
 		add(menuItems);
@@ -164,6 +185,11 @@ class MainMenuState extends MusicBeatState
 				selectedSomethin = true;
 				FlxG.sound.play(Paths.sound('cancelMenu'));
 				MusicBeatState.switchState(new TitleState());
+			}
+
+			if(FlxG.keys.justPressed.FIVE)
+			{
+				MusicBeatState.switchState(new SongSelectionState());
 			}
 
 			if (controls.ACCEPT)
