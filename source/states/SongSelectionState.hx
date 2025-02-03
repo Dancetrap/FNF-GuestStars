@@ -6,19 +6,26 @@ import objects.FlxEndlessGallery;
 import flixel.addons.display.FlxBackdrop;
 import flixel.addons.display.FlxGridOverlay;
 import backend.TrackData;
+import backend.FlxCameraFix;
 
 class SongSelectionState extends MusicBeatState
 {
     //Variables
     public static var curSelection:Int = 0;
     private var startPos:Float; //Start position of the gallery
-
     private var albumPos:Float; //The middle position of the selected track album
+    private var curData:TrackMetadata; //The current data track
 
     //Assets
     var bg:GradientBG;
     var songSelection:FlxEndlessGallery;
     var selectedAlbum:FlxSprite;
+
+    var border:FlxSprite;
+
+    var barCam:FlxCamera;
+    var topSongBar:FlxBackdrop;
+    var bottomSongBar:FlxBackdrop;
 
     //Data
     private var tracks:Array<TrackMetadata> = [];
@@ -101,6 +108,37 @@ class SongSelectionState extends MusicBeatState
 
         changeSelection(false);
         bg.setGradientImmediate(tracks[curSelection].topColor, tracks[curSelection].bottomColor);
+
+        border = new FlxSprite().loadGraphic(Paths.image("coolBorder"));
+        border.setGraphicSize(FlxG.width);
+        border.updateHitbox();
+        // add(border);
+
+        barCam = new FlxCamera();
+        barCam.bgColor.alpha = 0;
+        barCam.angle = 15;
+        barCam.zoom = 1.5;
+        FlxG.cameras.add(barCam, false);
+        FlxCameraFix.initialize([barCam]);
+        // FlxTween.tween(barCam, {angle: 30}, 2);
+        // @:privateAccess barCam.updateScrollRect();
+
+        topSongBar = new FlxBackdrop(Paths.image("pattern"), X);
+        topSongBar.y -= topSongBar.height - 20;
+        topSongBar.flipY = true;
+        topSongBar.velocity.set(30);
+        topSongBar.cameras = [barCam];
+        add(topSongBar);
+
+        bottomSongBar = new FlxBackdrop(Paths.image("pattern"), X);
+        bottomSongBar.y = FlxG.height - 20;
+        bottomSongBar.velocity.set(-30);
+        bottomSongBar.cameras = [barCam];
+        add(bottomSongBar);
+
+        var extraCam:FlxCamera = new FlxCamera();
+        extraCam.bgColor.alpha = 0;
+        FlxG.cameras.add(extraCam, false);
     }
 
     var holdTime:Float = 0;
@@ -163,7 +201,11 @@ class SongSelectionState extends MusicBeatState
         var lerpVal:Float = Math.exp(-elapsed * 9.6);
         songSelection.x = FlxMath.lerp(startPos - (FlxG.width/3 * p), songSelection.x, lerpVal);
 
+        FlxCameraFix.updateCamerasEarly(elapsed);
+
         super.update(elapsed);
+
+        FlxCameraFix.updateCameras(elapsed);
     }
 
     function changeSelection(?change:Int = 0, ?playSound:Bool = true)
@@ -192,27 +234,34 @@ class SongSelectionState extends MusicBeatState
         selectedAlbum.screenCenter();
         selectedAlbum.alpha = 1;
         songSelection.members[int].visible = false;
-
         FlxTween.tween(selectedAlbum, {x: 48}, 0.5, {ease: FlxEase.cubeInOut});
-
         FlxTween.tween(songSelection, {alpha: 0}, 0.5, {onComplete: function(twn:FlxTween){
             canInteract = true;
         }});
 
+        FlxTween.tween(barCam, {zoom: 1}, 1, {ease: FlxEase.cubeInOut});
+
+        Mods.currentModDirectory = tracks[int].folder;
+        curData = data;
+        // trace(curData.description);
+
         //Set all of the song info to the selected track
     }
 
-    //In selected song
+    //In selected song 
     function returnToSongSelection()
     {
-        // FlxTween.cancelChain();
+        FlxTween.cancelTweensOf(barCam);
         canInteract = false;
+        
         FlxTween.tween(selectedAlbum, {x: albumPos}, 0.5, {ease: FlxEase.cubeInOut, onComplete: function(twn:FlxTween){
             songSelection.members[curSelection].visible = true;
             songSelection.members[curSelection].alpha = 1;
             selectedAlbum.alpha = 0;
             selectedSong = false;
         }});
+
+        FlxTween.tween(barCam, {zoom: 1.5}, 0.5, {ease: FlxEase.cubeInOut});
 
         songSelection.forEach(function(spr:FlxSprite){
             if(spr.ID != curSelection)
@@ -241,6 +290,7 @@ class TrackMetadata
 		this.week = week;
         this.displayName = display;
 		this.songCharacter = songCharacter;
+        this.description = description;
 		this.topColor = topColor != null ? topColor : 0xFFFF0000;
         this.bottomColor = bottomColor != null ? bottomColor : 0xFF00FF00;
 		this.folder = Mods.currentModDirectory;

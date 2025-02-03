@@ -4,6 +4,7 @@ import flixel.addons.ui.FlxUIState;
 import flixel.addons.transition.FlxTransitionableState;
 import flixel.FlxState;
 import backend.PsychCamera;
+import backend.FlxCameraFix;
 
 class MusicBeatState extends FlxUIState
 {
@@ -209,5 +210,12 @@ class MusicBeatState extends FlxUIState
 		var val:Null<Float> = 4;
 		if(PlayState.SONG != null && PlayState.SONG.notes[curSection] != null) val = PlayState.SONG.notes[curSection].sectionBeats;
 		return val == null ? 4 : val;
+	}
+
+	override function destroy()
+	{
+		FlxCameraFix.destroy();
+		super.destroy();
+
 	}
 }
