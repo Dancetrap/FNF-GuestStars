@@ -157,4 +157,37 @@ class CoolUtil
 				text.borderStyle = NONE;
 		}
 	}
+
+	inline public static function colorMean(colors:Array<FlxColor>):FlxColor
+	{
+		var red:Float = 0;
+		var green:Float = 0;
+		var blue:Float = 0;
+
+		for(color in colors)
+		{
+			red += color.redFloat;
+			green += color.greenFloat;
+			blue += color.blueFloat;
+		}
+
+		return FlxColor.fromRGBFloat(red/colors.length, green/colors.length, blue/colors.length);
+	}
+
+	inline public static function zeroFormat(number:Int, zeroLimit:Int = 0):String
+	{
+		var numString = Std.string(number);
+		var zeroLength = zeroLimit - numString.length;
+		if(zeroLength > 0)
+		{
+			var stringArray:Array<String> = [];
+			for(i in 0...zeroLength)
+			{
+				stringArray.push("0");
+			}
+			stringArray.push(numString);
+			return stringArray.join("");
+		}
+		return numString;
+	}
 }

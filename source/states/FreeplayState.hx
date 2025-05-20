@@ -47,6 +47,7 @@ class FreeplayState extends MusicBeatState
 	var bottomBG:FlxSprite;
 
 	var player:MusicPlayer;
+	var startTimer:FlxTimer;
 
 	override function create()
 	{

@@ -31,6 +31,7 @@ import states.editors.CharacterEditorState;
 
 import substates.PauseSubState;
 import substates.GameOverSubstate;
+import substates.RankingSubState;
 
 #if !flash
 import flixel.addons.display.FlxRuntimeShader;
@@ -1099,7 +1100,7 @@ class PlayState extends MusicBeatState
 						case 3:
 							tick = TWO;
 						case 5:
-							FlxG.sound.play(Paths.sound('introLets'), 0.6);
+							FlxG.sound.play(Paths.sound('introLets' + introSoundsSuffix), 0.6);
 							tick = ONE;
 						case 7:
 							tick = GO;
@@ -1635,7 +1636,7 @@ class PlayState extends MusicBeatState
 		super.closeSubState();
 		
 		stagesFunc(function(stage:BaseStage) stage.closeSubState());
-		if (paused)
+		if (paused && !inOptions)
 		{
 			if (FlxG.sound.music != null && !startingSong)
 			{
@@ -1705,6 +1706,7 @@ class PlayState extends MusicBeatState
 	}
 
 	public var paused:Bool = false;
+	public static var inOptions:Bool = false;
 	public var canReset:Bool = true;
 	var startedCountdown:Bool = false;
 	var canPause:Bool = true;
@@ -2352,11 +2354,12 @@ class PlayState extends MusicBeatState
 		}
 	}
 
+	var finishedSong:Bool = false;
 	public function finishSong(?ignoreNoteOffset:Bool = false):Void
 	{
 		updateTime = false;
 		FlxG.sound.music.volume = 0;
-
+		finishedSong = true;
 		vocals.volume = 0;
 		vocals.pause();
 		opponentVocals.volume = 0;
@@ -2373,6 +2376,7 @@ class PlayState extends MusicBeatState
 
 
 	public var transitioning = false;
+	var continueToEnd = false;
 	public function endSong()
 	{
 		//Should kill you if you tried to cheat
@@ -2415,7 +2419,20 @@ class PlayState extends MusicBeatState
 			#if !switch
 			var percent:Float = ratingPercent;
 			if(Math.isNaN(percent)) percent = 0;
+			var previousHighscore = Highscore.getScore(SONG.song, storyDifficulty);
+			var previousGrade = Highscore.getGrade(SONG.song, storyDifficulty);
 			Highscore.saveScore(SONG.song, songScore, storyDifficulty, percent);
+			Highscore.saveRanking(SONG.song, storyDifficulty, percent, songMisses);
+
+			if(!isStoryMode)
+			{
+				if(!continueToEnd && finishedSong && !chartingMode)
+				{
+					openSubState(new RankingSubState(SONG.song, storyDifficulty, songScore, songMisses, percent, previousHighscore, previousGrade, endSong));
+					continueToEnd = true;
+					return false;
+				}
+			}
 			#end
 			playbackRate = 1;
 
@@ -2424,6 +2441,8 @@ class PlayState extends MusicBeatState
 				openChartEditor();
 				return false;
 			}
+			
+			var screen = SongSelectionState.getRandomLoadingScreen();
 
 			if (isStoryMode)
 			{
@@ -2438,7 +2457,7 @@ class PlayState extends MusicBeatState
 					FlxG.sound.playMusic(Paths.music('freakyMenu'));
 					#if DISCORD_ALLOWED DiscordClient.resetClientID(); #end
 
-					MusicBeatState.switchState(new StoryMenuState());
+					MusicBeatState.switchState(new StoryMenuState(), true, screen[0], screen[1]);
 
 					// if ()
 					if(!ClientPrefs.getGameplaySetting('practice') && !ClientPrefs.getGameplaySetting('botplay')) {
@@ -2464,7 +2483,7 @@ class PlayState extends MusicBeatState
 					PlayState.SONG = Song.loadFromJson(PlayState.storyPlaylist[0] + difficulty, PlayState.storyPlaylist[0]);
 					FlxG.sound.music.stop();
 
-					LoadingState.loadAndSwitchState(new PlayState());
+					LoadingState.loadAndSwitchState(new PlayState(), false, false);
 				}
 			}
 			else
@@ -2473,7 +2492,8 @@ class PlayState extends MusicBeatState
 				Mods.loadTopMod();
 				#if DISCORD_ALLOWED DiscordClient.resetClientID(); #end
 
-				MusicBeatState.switchState(new FreeplayState());
+				// MusicBeatState.switchState(new FreeplayState());
+				MusicBeatState.switchState(new SongSelectionState(), true, screen[0], screen[1]);
 				FlxG.sound.playMusic(Paths.music('freakyMenu'));
 				changedDifficulty = false;
 			}

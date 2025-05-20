@@ -11,6 +11,8 @@ typedef TrackInfo =
     var title:String;
     var description:String;
     var color:Null<Array<String>>;
+	var additionalCharacters:Null<Array<String>>;
+	var tags:Null<Array<String>>;
 }
 
 typedef TrackFile = 
@@ -26,6 +28,8 @@ class TrackData {
     public var songs:Array<TrackInfo> = [];
 
     public var fileName:String;
+
+	public static var defaultTags:Array<String> = [""];
 
     public function new(trackFile:TrackFile, fileName:String) {
 		// here ya go - MiguelItsOut

@@ -23,6 +23,7 @@ typedef SwagSong =
 	@:optional var gameOverSound:String;
 	@:optional var gameOverLoop:String;
 	@:optional var gameOverEnd:String;
+	@:optional var gameOverStart:Float;
 	
 	@:optional var disableNoteRGB:Bool;
 
@@ -43,6 +44,7 @@ class Song
 	public var gameOverSound:String;
 	public var gameOverLoop:String;
 	public var gameOverEnd:String;
+	public var gameOverStart:Float;
 	public var disableNoteRGB:Bool = false;
 	public var speed:Float = 1;
 	public var stage:String;

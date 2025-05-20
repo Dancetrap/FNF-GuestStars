@@ -21,6 +21,7 @@ import shaders.ColorSwap;
 import states.StoryMenuState;
 import states.OutdatedState;
 import states.MainMenuState;
+import states.GuestStarsMainMenuState;
 
 typedef TitleData =
 {
@@ -32,6 +33,48 @@ typedef TitleData =
 	gfy:Float,
 	backgroundSprite:String,
 	bpm:Float
+}
+
+class GuestStarsLogo extends FlxSpriteGroup
+{
+	var disk:FlxSprite;
+	var logo:FlxSprite;
+	public function new(x:Float, y:Float)
+	{
+		super(x,y);
+		var graphic = Paths.getSparrowAtlas("guest_stars_logo");
+
+		disk = new FlxSprite(196.5, 103.4);
+		disk.frames = graphic;
+		disk.animation.addByPrefix("disk","Disk",24);
+		disk.antialiasing = ClientPrefs.data.antialiasing;
+		disk.animation.play("disk");
+		add(disk);
+
+		logo = new FlxSprite();
+		logo.frames = graphic;
+		logo.antialiasing = ClientPrefs.data.antialiasing;
+		logo.animation.addByPrefix("logo bumpin", "bounce", 24, false);
+		add(logo);
+
+		FlxTween.angle(disk, 0, 359, 5, {type: LOOPING});
+	}
+
+	public function dance(?skip:Bool = true)
+	{
+		logo.animation.play("logo bumpin", skip);
+	}
+
+	override function update(elapsed)
+	{
+		if(disk.shader != shader)
+			disk.shader = shader;
+
+		if(logo.shader != shader)
+			logo.shader = shader;
+
+		super.update(elapsed);
+	}
 }
 
 class TitleState extends MusicBeatState
@@ -71,13 +114,6 @@ class TitleState extends MusicBeatState
 
 	override public function create():Void
 	{
-		// for(track in TrackData.tracksList)
-		// {
-		// 	for(song in TrackData.tracksLoaded[track].songs)
-		// 	{
-		// 		trace(song.title);
-		// 	}
-		// }
 		Paths.clearStoredMemory();
 
 		#if LUA_ALLOWED
@@ -123,6 +159,7 @@ class TitleState extends MusicBeatState
 
 		Highscore.load();
 		TrackData.reloadTracksFiles();
+		GuestStarsLogsState.loadLogs();
 
 		// IGNORE THIS!!!
 		titleJSON = tjson.TJSON.parse(Paths.getTextFromFile('images/gfDanceTitle.json'));
@@ -183,7 +220,7 @@ class TitleState extends MusicBeatState
 		#end
 	}
 
-	var logoBl:FlxSprite;
+	var logoBl:GuestStarsLogo;
 	var gfDance:FlxSprite;
 	var danceLeft:Bool = false;
 	var titleText:FlxSprite;
@@ -199,6 +236,7 @@ class TitleState extends MusicBeatState
 		}
 
 		Conductor.bpm = titleJSON.bpm;
+		GuestStarsMainMenuState.bpm = titleJSON.bpm;
 		persistentUpdate = true;
 
 		var bg:FlxSprite = new FlxSprite();
@@ -214,13 +252,16 @@ class TitleState extends MusicBeatState
 		// bg.updateHitbox();
 		add(bg);
 
-		logoBl = new FlxSprite(titleJSON.titlex, titleJSON.titley);
-		logoBl.frames = Paths.getSparrowAtlas('logoBumpin');
-		logoBl.antialiasing = ClientPrefs.data.antialiasing;
+		// logoBl = new FlxSprite(titleJSON.titlex, titleJSON.titley);
+		// logoBl.frames = Paths.getSparrowAtlas('guest_stars_logo');
+		// logoBl.antialiasing = ClientPrefs.data.antialiasing;
 
-		logoBl.animation.addByPrefix('bump', 'logo bumpin', 24, false);
-		logoBl.animation.play('bump');
-		logoBl.updateHitbox();
+		// logoBl.animation.addByPrefix('bump', 'logo bumpin', 24, false);
+		// logoBl.animation.play('bump');
+		// logoBl.updateHitbox();
+
+		logoBl = new GuestStarsLogo(titleJSON.titlex, titleJSON.titley);
+		logoBl.antialiasing = ClientPrefs.data.antialiasing;
 		// logoBl.screenCenter();
 		// logoBl.color = FlxColor.BLACK;
 
@@ -422,11 +463,11 @@ class TitleState extends MusicBeatState
 
 				new FlxTimer().start(1, function(tmr:FlxTimer)
 				{
-					if (mustUpdate) {
-						MusicBeatState.switchState(new OutdatedState());
-					} else {
-						MusicBeatState.switchState(new MainMenuState());
-					}
+					// if (mustUpdate) {
+					// 	MusicBeatState.switchState(new OutdatedState());
+					// } else {
+						MusicBeatState.switchState(new GuestStarsMainMenuState());
+					// }
 					closedState = true;
 				});
 				// FlxG.sound.play(Paths.music('titleShoot'), 0.7);
@@ -538,7 +579,8 @@ class TitleState extends MusicBeatState
 		super.beatHit();
 
 		if(logoBl != null)
-			logoBl.animation.play('bump', true);
+			// logoBl.animation.play('bump', true);
+			logoBl.dance();
 
 		if(gfDance != null) {
 			danceLeft = !danceLeft;

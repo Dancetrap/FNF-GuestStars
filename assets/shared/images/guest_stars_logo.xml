@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="guest_stars_logo.png">
+	<!-- Created with Adobe Animate version 24.0.7.61 -->
+	<!-- http://www.adobe.com/products/animate.html -->
+	<SubTexture name="Disk0000" x="0" y="0" width="591" height="591"/>
+	<SubTexture name="bounce0000" x="641" y="0" width="821" height="595" frameX="-69" frameY="-51" frameWidth="980" frameHeight="703"/>
+	<SubTexture name="bounce0001" x="0" y="645" width="980" height="703"/>
+	<SubTexture name="bounce0002" x="0" y="645" width="980" height="703"/>
+	<SubTexture name="bounce0003" x="1030" y="645" width="889" height="629" frameX="-44" frameY="-34" frameWidth="980" frameHeight="703"/>
+	<SubTexture name="bounce0004" x="0" y="1398" width="869" height="617" frameX="-46" frameY="-43" frameWidth="980" frameHeight="703"/>
+	<SubTexture name="bounce0005" x="641" y="0" width="821" height="595" frameX="-69" frameY="-51" frameWidth="980" frameHeight="703"/>
+	<SubTexture name="bounce0006" x="641" y="0" width="821" height="595" frameX="-69" frameY="-51" frameWidth="980" frameHeight="703"/>
+	<SubTexture name="bounce0007" x="641" y="0" width="821" height="595" frameX="-69" frameY="-51" frameWidth="980" frameHeight="703"/>
+	<SubTexture name="bounce0008" x="641" y="0" width="821" height="595" frameX="-69" frameY="-51" frameWidth="980" frameHeight="703"/>
+	<SubTexture name="bounce0009" x="641" y="0" width="821" height="595" frameX="-69" frameY="-51" frameWidth="980" frameHeight="703"/>
+	<SubTexture name="bounce0010" x="641" y="0" width="821" height="595" frameX="-69" frameY="-51" frameWidth="980" frameHeight="703"/>
+	<SubTexture name="bounce0011" x="641" y="0" width="821" height="595" frameX="-69" frameY="-51" frameWidth="980" frameHeight="703"/>
+	<SubTexture name="bounce0012" x="641" y="0" width="821" height="595" frameX="-69" frameY="-51" frameWidth="980" frameHeight="703"/>
+	<SubTexture name="bounce0013" x="641" y="0" width="821" height="595" frameX="-69" frameY="-51" frameWidth="980" frameHeight="703"/>
+	<SubTexture name="bounce0014" x="641" y="0" width="821" height="595" frameX="-69" frameY="-51" frameWidth="980" frameHeight="703"/>
+	<SubTexture name="bounce0015" x="641" y="0" width="821" height="595" frameX="-69" frameY="-51" frameWidth="980" frameHeight="703"/>
+</TextureAtlas>

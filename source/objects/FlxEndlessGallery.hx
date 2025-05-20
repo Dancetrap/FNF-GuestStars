@@ -56,6 +56,7 @@ class FlxEndlessGallery extends FlxSpriteGroup
                 //The spacing has to be multiplied with the graphics length, so that the beginning and end can have a spacing, too
                 backdrop.x = currentWidth;
                 backdrop.ID = graphics.indexOf(graphic);
+                backdrop.antialiasing = ClientPrefs.data.antialiasing;
                 currentWidth += graphic.width + spacing/defaultScales[graphics.indexOf(graphic)];
                 add(backdrop);
             }
@@ -66,6 +67,8 @@ class FlxEndlessGallery extends FlxSpriteGroup
                 _setMaxHeight(size) 
             else
                 setScale(size);
+
+            antialiasing = ClientPrefs.data.antialiasing;
         }
     }
 
@@ -92,6 +95,7 @@ class FlxEndlessGallery extends FlxSpriteGroup
                 if(update) backdrop.updateHitbox();
                 backdrop.x = currentWidth;
                 currentWidth += update ? backdrop.width + _spacing * scale : (backdrop.width + _spacing) * scale;
+                backdrop.antialiasing = ClientPrefs.data.antialiasing;
             }
 
             // _spacing *= scale;

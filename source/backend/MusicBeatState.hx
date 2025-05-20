@@ -24,6 +24,8 @@ class MusicBeatState extends FlxUIState
 
 	var _psychCameraInitialized:Bool = false;
 
+	private static var coolLoadingState:Bool;
+
 	override function create() {
 		var skip:Bool = FlxTransitionableState.skipNextTransOut;
 		#if MODS_ALLOWED Mods.updatedOnState = false; #end
@@ -33,7 +35,8 @@ class MusicBeatState extends FlxUIState
 		super.create();
 
 		if(!skip) {
-			openSubState(new CustomFadeTransition(0.6, true));
+			if(coolLoadingState) openSubState(new LoadingTransition(0.6, true));
+			else openSubState(new CustomFadeTransition(0.6, true));
 		}
 		FlxTransitionableState.skipNextTransOut = false;
 		timePassedOnState = 0;
@@ -130,7 +133,7 @@ class MusicBeatState extends FlxUIState
 		curStep = lastChange.stepTime + Math.floor(shit);
 	}
 
-	public static function switchState(nextState:FlxState = null) {
+	public static function switchState(nextState:FlxState = null, loadingTrans:Bool = false, file:String = 'funkay', library:String = 'assets/shared/') {
 		if(nextState == null) nextState = FlxG.state;
 		if(nextState == FlxG.state)
 		{
@@ -139,7 +142,7 @@ class MusicBeatState extends FlxUIState
 		}
 
 		if(FlxTransitionableState.skipNextTransIn) FlxG.switchState(nextState);
-		else startTransition(nextState);
+		else startTransition(nextState, loadingTrans, file, library);
 		FlxTransitionableState.skipNextTransIn = false;
 	}
 
@@ -150,16 +153,29 @@ class MusicBeatState extends FlxUIState
 	}
 
 	// Custom made Trans in
-	public static function startTransition(nextState:FlxState = null)
+	public static function startTransition(nextState:FlxState = null, loadingTrans:Bool = false, file:String = 'funkay', library:String = 'assets/shared/')
 	{
 		if(nextState == null)
 			nextState = FlxG.state;
 
-		FlxG.state.openSubState(new CustomFadeTransition(0.6, false));
-		if(nextState == FlxG.state)
-			CustomFadeTransition.finishCallback = function() FlxG.resetState();
+		coolLoadingState = loadingTrans;
+		if(loadingTrans)
+		{
+			FlxG.state.openSubState(new LoadingTransition(0.6, false, file, library));
+			if(nextState == FlxG.state)
+				LoadingTransition.finishCallback = function() FlxG.resetState();
+			else
+				LoadingTransition.finishCallback = function() FlxG.switchState(nextState);
+		}
 		else
-			CustomFadeTransition.finishCallback = function() FlxG.switchState(nextState);
+		{
+			FlxG.state.openSubState(new CustomFadeTransition(0.6, false));
+			if(nextState == FlxG.state)
+				CustomFadeTransition.finishCallback = function() FlxG.resetState();
+			else
+				CustomFadeTransition.finishCallback = function() FlxG.switchState(nextState);
+		}
+
 	}
 
 	public static function getState():MusicBeatState {

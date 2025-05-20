@@ -6,12 +6,12 @@ class GradientBG extends FlxSprite
 {
     var gradient:GradientEffect = null;
 
-    public var startColor:FlxColor = FlxColor.WHITE;
-    public var endColor:FlxColor = FlxColor.BLACK;
+    public var startColor(default, null):FlxColor = FlxColor.WHITE;
+    public var endColor(default, null):FlxColor = FlxColor.BLACK;
     public var time(default, set):Float = 8;
 
-    var curStart:FlxColor;
-    var curEnd:FlxColor;
+    public var curStart(default, null):FlxColor;
+    public var curEnd(default, null):FlxColor;
 
     public function new(x:Float,y:Float,width:Int,height:Int, start:FlxColor = FlxColor.WHITE, end:FlxColor = FlxColor.BLACK)
     {
@@ -30,6 +30,14 @@ class GradientBG extends FlxSprite
 
     override function update(elapsed) {
         super.update(elapsed);
+
+        // curStart.redFloat = FlxMath.bound(FlxMath.lerp(curStart.redFloat, startColor.redFloat + 0.1, elapsed * time), 0, startColor.redFloat);
+        // curStart.greenFloat = FlxMath.bound(FlxMath.lerp(curStart.greenFloat, startColor.greenFloat + 0.1, elapsed * time), 0, startColor.greenFloat);
+        // curStart.blueFloat = FlxMath.bound(FlxMath.lerp(curStart.blueFloat, startColor.blueFloat + 0.1, elapsed * time), 0, startColor.blueFloat);
+
+        // curEnd.redFloat = FlxMath.bound(FlxMath.lerp(curEnd.redFloat, endColor.redFloat + 0.1, elapsed * time), 0, endColor.redFloat);
+        // curEnd.greenFloat = FlxMath.bound(FlxMath.lerp(curEnd.greenFloat, endColor.greenFloat + 0.1, elapsed * time), 0, endColor.greenFloat);
+        // curEnd.blueFloat = FlxMath.bound(FlxMath.lerp(curEnd.blueFloat, endColor.blueFloat + 0.1, elapsed * time), 0, endColor.blueFloat);
 
         curStart.redFloat = FlxMath.lerp(curStart.redFloat, startColor.redFloat, elapsed * time);
         curStart.greenFloat = FlxMath.lerp(curStart.greenFloat, startColor.greenFloat, elapsed * time);
@@ -63,8 +71,7 @@ class GradientBG extends FlxSprite
 
     private function set_time(value:Float):Float
     {
-        time = value;
-        return time;
+        return time = value;
     }
 }
 

@@ -34,6 +34,9 @@ class MainMenuState extends MusicBeatState
 	// var whiteBG:FlxSprite;
 	var whiteBG:GradientBG;
 
+	var colors:Array<FlxColor> = [FlxColor.RED, FlxColor.ORANGE, FlxColor.YELLOW, FlxColor.GREEN, FlxColor.CYAN, FlxColor.BLUE, FlxColor.PURPLE, FlxColor.MAGENTA];
+	static var color:Int = 4;
+
 	override function create()
 	{
 		#if MODS_ALLOWED
@@ -79,10 +82,14 @@ class MainMenuState extends MusicBeatState
 		// whiteBG.screenCenter();
 		// add(whiteBG);
 
-		whiteBG = new GradientBG(0,0,FlxG.width, FlxG.height);
+		var secColor = color + 1;
+		if(secColor >= colors.length) secColor = 0;
+
+		whiteBG = new GradientBG(0,0,FlxG.width, FlxG.height, colors[color], colors[secColor]);
 		whiteBG.scrollFactor.set(0,0);
 		whiteBG.updateHitbox();
 		whiteBG.screenCenter();
+		whiteBG.time = 0.5;
 		add(whiteBG);
 
 		// var testGallery:FlxEndlessGallery = new FlxEndlessGallery([Paths.image("menuBG"), Paths.image("menuBGBlue"), Paths.image("unknownMod"), Paths.image("menuBGMagenta"),Paths.image("menuDesat")], 40);
@@ -148,7 +155,23 @@ class MainMenuState extends MusicBeatState
 
 		super.create();
 
+		setNewColors();
+		new FlxTimer().start(1, function(tmr:FlxTimer){
+			setNewColors();
+		}, 0);
+
 		FlxG.camera.follow(camFollow, null, 9);
+	}
+
+	function setNewColors()
+	{
+		color++;
+		if(color >= colors.length) color = 0;
+
+		var secColor = color + 1;
+		if(secColor >= colors.length) secColor = 0;
+
+		whiteBG.setGradient(colors[color], colors[secColor]);
 	}
 
 	var selectedSomethin:Bool = false;
